@@ -16,7 +16,12 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+
+# Add this below it as fallback:
+if not ALLOWED_HOSTS or ALLOWED_HOSTS == ['']:
+    ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     h for h in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if h
@@ -36,7 +41,7 @@ INSTALLED_APPS = [
     'announcements',
     'gallery',
     'dashboard',
-    'gujarati_samaj'
+    'gujrati_samaj'
 ]
 
 MIDDLEWARE = [
@@ -50,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'gujarati_samaj.urls'
+ROOT_URLCONF = 'gujrati_samaj.urls'
 
 TEMPLATES = [
     {
