@@ -4,7 +4,20 @@
     {
       "src": "vercel_app.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb" }
+      "config": {
+        "maxLambdaSize": "15mb",
+        "includeFiles": [
+          "templates/**",
+          "static/**",
+          "gujarati_samaj/**",
+          "accounts/**",
+          "families/**",
+          "events/**",
+          "announcements/**",
+          "gallery/**",
+          "dashboard/**"
+        ]
+      }
     },
     {
       "src": "build_files.sh",
