@@ -1,2 +1,3 @@
-pip install -r requirements.txt --break-system-packages
+mkdir -p staticfiles
+pip install -r requirements.txt
 python manage.py collectstatic --noinput
