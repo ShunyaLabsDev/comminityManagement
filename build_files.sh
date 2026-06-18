@@ -1,4 +1,4 @@
 #!/bin/bash
-pip install -r requirements.txt --target /vercel/path0/lib/python3.12/site-packages
+pip install -r requirements.txt --target=/vercel/path0/.python_packages/lib/site-packages
 mkdir -p staticfiles
-python manage.py collectstatic --noinput
+PYTHONPATH=/vercel/path0/.python_packages/lib/site-packages python manage.py collectstatic --noinput
