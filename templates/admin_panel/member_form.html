@@ -1,0 +1,189 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Add Member{% endblock %}
+{% block page_title %}Add Member / સભ્ય ઉમેરો{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section { background: #F8F9FA; border-radius: 8px; padding: 1rem 1.1rem; margin-bottom: 1rem; border-left: 3px solid var(--saffron); }
+    .form-section-title { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--dark-blue); margin-bottom: 0.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <!-- Family info strip -->
+        <div class="content-card mb-3">
+            <div style="padding:0.85rem 1.25rem;display:flex;align-items:center;gap:12px;background:rgba(255,140,0,0.04);">
+                <div style="width:42px;height:42px;background:var(--dark-blue);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:1.1rem;flex-shrink:0;">
+                    {{ family.family_name|first }}
+                </div>
+                <div>
+                    <div style="font-weight:700;color:var(--dark-blue);font-size:15px;">{{ family.family_name }}</div>
+                    <div style="font-size:12.5px;color:#888;">
+                        <i class="bi bi-geo-alt-fill" style="color:var(--saffron);"></i> {{ family.village }}
+                        &nbsp;|&nbsp; {{ family.family_id }}
+                        &nbsp;|&nbsp; {{ family.member_count }} member(s)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <div class="content-card-header">
+                <div class="content-card-title">
+                    <i class="bi bi-person-plus-fill me-2" style="color:var(--saffron);"></i>New Member Details
+                </div>
+            </div>
+            <div style="padding:1.5rem;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- 1. Basic Info -->
+                    <div class="form-section">
+                        <div class="form-section-title">👤 Basic Information</div>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Full Name *</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Relation *</label>
+                                {{ form.relation }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Gender *</label>
+                                {{ form.gender }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Date of Birth</label>
+                                {{ form.date_of_birth }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Marital Status *</label>
+                                {{ form.marital_status }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Blood Group</label>
+                                {{ form.blood_group }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Photo</label>
+                                {{ form.photo }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Contact -->
+                    <div class="form-section">
+                        <div class="form-section-title">📞 Contact</div>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Mobile</label>
+                                {{ form.mobile }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">WhatsApp</label>
+                                {{ form.whatsapp }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Email</label>
+                                {{ form.email }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Education & Work -->
+                    <div class="form-section">
+                        <div class="form-section-title">🎓 Education & Occupation</div>
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Education Level</label>
+                                {{ form.education }}
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label">Education Detail</label>
+                                {{ form.education_detail }}
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Occupation</label>
+                                {{ form.occupation }}
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label">Work Detail</label>
+                                {{ form.occupation_detail }}
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Annual Income</label>
+                                {{ form.annual_income }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Marriage -->
+                    <div class="form-section" id="marriageSection">
+                        <div class="form-section-title">💍 Marriage Details</div>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label">Spouse Name</label>
+                                {{ form.spouse_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Marriage Date</label>
+                                {{ form.marriage_date }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Health -->
+                    <div class="form-section">
+                        <div class="form-section-title">🏥 Health</div>
+                        <div class="row g-2 align-items-center">
+                            <div class="col-auto">
+                                <div class="form-check">
+                                    {{ form.any_disability }}
+                                    <label class="form-check-label" style="font-size:13px;font-weight:600;color:var(--dark-blue);">
+                                        Any Disability?
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col" id="disabilityDetail">
+                                {{ form.disability_detail }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color:rgba(11,31,77,0.08);">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'dashboard_families' %}" style="background:#F0F2F5;color:#444;border:none;border-radius:7px;padding:0.5rem 1.2rem;font-size:13.5px;font-weight:600;text-decoration:none;">
+                            Cancel
+                        </a>
+                        <button type="submit" style="background:var(--saffron);color:white;border:none;border-radius:7px;padding:0.5rem 1.5rem;font-size:13.5px;font-weight:600;cursor:pointer;">
+                            <i class="bi bi-person-check-fill me-1"></i>Add Member
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const maritalSel = document.getElementById('{{ form.marital_status.id_for_label }}');
+const marriageSection = document.getElementById('marriageSection');
+function toggleMarriage() {
+    marriageSection.style.display = maritalSel.value === 'married' ? 'block' : 'none';
+}
+if (maritalSel) { maritalSel.addEventListener('change', toggleMarriage); toggleMarriage(); }
+
+const disabCheck = document.getElementById('{{ form.any_disability.id_for_label }}');
+const disabDetail = document.getElementById('disabilityDetail');
+function toggleDisab() {
+    disabDetail.style.display = disabCheck.checked ? 'block' : 'none';
+}
+if (disabCheck) { disabCheck.addEventListener('change', toggleDisab); toggleDisab(); }
+</script>
+{% endblock %}

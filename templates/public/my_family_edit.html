@@ -1,0 +1,81 @@
+{% extends "public/base.html" %}
+{% block title %}Edit Family{% endblock %}
+
+{% block content %}
+
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'my_family' %}" style="color:var(--saffron);">My Family</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">Edit</li>
+        </ol></nav>
+        <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.8rem; font-weight:700; color:var(--saffron); margin:0.5rem 0 0;">
+            ✏️ કુટુંબ સુધારો
+        </h1>
+        <div style="color:rgba(255,255,255,0.8);">Edit Family Details — {{ family.family_id }}</div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0; max-width: 700px;">
+    <div class="samaj-card p-4">
+
+        {% if family.family_photo %}
+        <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:#F8F9FA;border-radius:8px;">
+            <img src="{{ family.family_photo.url }}" alt="{{ family.family_name }}"
+                 style="width:60px;height:60px;object-fit:cover;border-radius:50%;border:2px solid var(--saffron);">
+            <div>
+                <div style="font-family:'Noto Sans Gujarati',sans-serif;font-weight:700;color:var(--dark-blue);">{{ family.family_name }}</div>
+                <div style="font-size:12.5px;color:#888;">Current photo • Upload a new one below to replace</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Family Head Name</label>
+                    {{ form.family_name }}
+                    {% if form.family_name.errors %}<div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.family_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Village</label>
+                    {{ form.village }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Gotra</label>
+                    {{ form.gotra }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Mobile</label>
+                    {{ form.mobile }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Business Type</label>
+                    {{ form.business }}
+                </div>
+                <div class="col-12">
+                    <label class="form-label"><span style="color:var(--saffron);">*</span> Full Address</label>
+                    {{ form.address }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email (optional)</label>
+                    {{ form.email }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Family Photo (optional)</label>
+                    {{ form.family_photo }}
+                </div>
+            </div>
+            <hr style="margin:1.5rem 0;border-color:rgba(11,31,77,0.08);">
+            <div class="d-flex gap-2 justify-content-between">
+                <a href="{% url 'my_family' %}" class="btn-samaj-outline">Cancel</a>
+                <button type="submit" class="btn-saffron" style="width:auto;padding:0.6rem 2rem;font-size:14px;">
+                    <i class="bi bi-check-lg me-1"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

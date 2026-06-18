@@ -1,0 +1,55 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Add Event{% endblock %}
+{% block page_title %}Add Event / કાર્યક્રમ ઉમેરો{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div class="content-card-title">
+                    <i class="bi bi-calendar-plus-fill me-2" style="color:var(--saffron);"></i>New Event
+                </div>
+            </div>
+            <div style="padding: 1.5rem;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Event Title / કાર્યક્રમ નામ *</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description / વિગત *</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date / તારીખ *</label>
+                            {{ form.event_date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Time / સમય</label>
+                            {{ form.event_time }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location / સ્થળ *</label>
+                            {{ form.location }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Event Image / ફોટો</label>
+                            {{ form.image }}
+                        </div>
+                    </div>
+                    <hr style="margin: 1.5rem 0; border-color: rgba(11,31,77,0.1);">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'dashboard_home' %}" style="background:#F0F2F5; color:#444; border:none; border-radius:7px; padding:0.5rem 1.2rem; font-size:13.5px; font-weight:600; text-decoration:none;">Cancel</a>
+                        <button type="submit" style="background:var(--saffron); color:white; border:none; border-radius:7px; padding:0.5rem 1.5rem; font-size:13.5px; font-weight:600; cursor:pointer;">
+                            <i class="bi bi-check-lg me-1"></i>Save Event
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

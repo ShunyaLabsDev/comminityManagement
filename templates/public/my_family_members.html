@@ -1,0 +1,412 @@
+{% extends "public/base.html" %}
+{% block title %}Manage Members - {{ family.family_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-section {
+        background: #F8F9FA;
+        border-radius: 8px;
+        padding: 1rem 1.1rem;
+        margin-bottom: 1rem;
+        border-left: 3px solid var(--saffron);
+    }
+    .form-section-title {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--dark-blue);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .form-label { font-size: 12.5px; font-weight: 600; color: var(--dark-blue); margin-bottom: 3px; }
+    .form-control, .form-select { font-size: 13.5px; padding: 0.45rem 0.75rem; border-radius: 6px; }
+    .form-control:focus, .form-select:focus { border-color: var(--saffron); box-shadow: 0 0 0 0.15rem rgba(255,140,0,0.15); }
+    .optional-tag { font-weight: 400; color: #aaa; font-size: 11px; }
+    .member-card { background: white; border-radius: 10px; border: 1px solid rgba(11,31,77,0.09); box-shadow: 0 2px 8px rgba(11,31,77,0.06); padding: 0; overflow: hidden; transition: box-shadow 0.2s; }
+    .member-card:hover { box-shadow: 0 4px 16px rgba(11,31,77,0.12); }
+    .member-card-header { background: linear-gradient(135deg, var(--dark-blue), #1e3f85); padding: 0.85rem 1rem; display: flex; align-items: center; gap: 10px; }
+    .member-detail-row { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12.5px; color: #555; margin-top: 4px; }
+    .member-detail-chip { background: rgba(11,31,77,0.06); color: var(--dark-blue); border-radius: 4px; padding: 1px 8px; font-size: 11.5px; font-weight: 500; }
+    .badge-married { background: rgba(40,167,69,0.1); color: #28a745; }
+    .badge-unmarried { background: rgba(255,140,0,0.1); color: var(--saffron); }
+    #addMemberForm { display: none; }
+    #addMemberForm.show { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'my_family' %}" style="color:var(--saffron);">My Family</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">Members</li>
+        </ol></nav>
+        <div class="d-flex justify-content-between align-items-end mt-2 flex-wrap gap-2">
+            <div>
+                <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.6rem; font-weight:700; color:var(--saffron); margin:0;">
+                    👨‍👩‍👧‍👦 {{ family.family_name }}
+                </h1>
+                <div style="color:rgba(255,255,255,0.7);font-size:13px;">
+                    {{ family.family_id }} &nbsp;|&nbsp; {{ family.village }}
+                    &nbsp;|&nbsp; {{ members|length }} member{{ members|length|pluralize }}
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'family_detail' family.pk %}" class="hero-btn-secondary" style="font-size:13px;" target="_blank">
+                    <i class="bi bi-eye me-1"></i>Public View
+                </a>
+                <a href="{% url 'family_pdf' family.pk %}" class="hero-btn-secondary" style="font-size:13px;" target="_blank">
+                    <i class="bi bi-file-pdf me-1"></i>PDF
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0; max-width: 900px;">
+
+    <!-- ADD MEMBER TOGGLE BUTTON -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div style="font-size:1rem;font-weight:700;color:var(--dark-blue);">
+            Family Members
+            <span style="background:var(--saffron);color:white;border-radius:10px;padding:1px 10px;font-size:12px;margin-left:6px;">{{ members|length }}</span>
+        </div>
+        <button id="toggleFormBtn" onclick="toggleForm()" class="btn-saffron" style="font-size:13.5px;width:auto;padding:0.5rem 1.2rem;">
+            <i class="bi bi-person-plus-fill me-1"></i> Add Member
+        </button>
+    </div>
+
+    <!-- ADD MEMBER FORM (collapsed by default unless just arrived from registration) -->
+    <div id="addMemberForm" class="samaj-card p-4 mb-4 {% if not members %}show{% endif %}">
+        <div style="font-family:'Noto Sans Gujarati',sans-serif;font-size:1rem;font-weight:700;color:var(--dark-blue);margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;">
+            <span><i class="bi bi-person-plus-fill me-2" style="color:var(--saffron);"></i>Add New Member</span>
+            <button type="button" onclick="toggleForm()" style="background:none;border:none;color:#888;font-size:1.2rem;cursor:pointer;line-height:1;">✕</button>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- SECTION 1: Basic Info -->
+            <div class="form-section">
+                <div class="form-section-title">👤 Basic Information</div>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label">Full Name *</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}<div style="color:#dc3545;font-size:11.5px;">{{ form.name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Relation *</label>
+                        {{ form.relation }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Gender *</label>
+                        {{ form.gender }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Date of Birth <span class="optional-tag">(optional)</span></label>
+                        {{ form.date_of_birth }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Marital Status *</label>
+                        {{ form.marital_status }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Blood Group <span class="optional-tag">(optional)</span></label>
+                        {{ form.blood_group }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Photo <span class="optional-tag">(optional)</span></label>
+                        {{ form.photo }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: Contact -->
+            <div class="form-section">
+                <div class="form-section-title">📞 Contact Details <span class="optional-tag" style="text-transform:none;letter-spacing:0;">— all optional</span></div>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label">Mobile</label>
+                        {{ form.mobile }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">WhatsApp</label>
+                        {{ form.whatsapp }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: Education & Work -->
+            <div class="form-section">
+                <div class="form-section-title">🎓 Education & Occupation <span class="optional-tag" style="text-transform:none;letter-spacing:0;">— all optional</span></div>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label class="form-label">Education Level</label>
+                        {{ form.education }}
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">Education Detail</label>
+                        {{ form.education_detail }}
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Occupation</label>
+                        {{ form.occupation }}
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Work Detail</label>
+                        {{ form.occupation_detail }}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Annual Income</label>
+                        {{ form.annual_income }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 4: Marriage (shown/hidden by JS) -->
+            <div class="form-section" id="marriageSection" style="display:none;">
+                <div class="form-section-title">💍 Marriage Details <span class="optional-tag" style="text-transform:none;letter-spacing:0;">— optional</span></div>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label">Spouse Name</label>
+                        {{ form.spouse_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Marriage Date</label>
+                        {{ form.marriage_date }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 5: Health / Disability -->
+            <div class="form-section">
+                <div class="form-section-title">🏥 Health <span class="optional-tag" style="text-transform:none;letter-spacing:0;">— optional</span></div>
+                <div class="row g-2 align-items-center">
+                    <div class="col-auto">
+                        <div class="form-check">
+                            {{ form.any_disability }}
+                            <label class="form-check-label" for="{{ form.any_disability.id_for_label }}" style="font-size:13px;font-weight:600;color:var(--dark-blue);">
+                                Any Disability?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col" id="disabilityDetail" style="display:none;">
+                        {{ form.disability_detail }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-2">
+                <button type="button" onclick="toggleForm()" class="btn-samaj-outline">Cancel</button>
+                <button type="submit" class="btn-saffron" style="width:auto;padding:0.55rem 1.8rem;font-size:14px;">
+                    <i class="bi bi-person-check-fill me-1"></i>Save Member
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- MEMBER LIST -->
+    {% if members %}
+    <div class="row g-3">
+        {% for member in members %}
+        <div class="col-12 col-md-6">
+            <div class="member-card">
+                <!-- Header -->
+                <div class="member-card-header">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" alt="{{ member.name }}"
+                         style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--saffron);flex-shrink:0;">
+                    {% else %}
+                    <div style="width:48px;height:48px;border-radius:50%;background:var(--saffron);display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;font-weight:700;flex-shrink:0;">
+                        {{ member.name|first }}
+                    </div>
+                    {% endif %}
+                    <div class="flex-grow-1 min-width-0">
+                        <div style="font-family:'Noto Sans Gujarati',sans-serif;font-weight:700;color:white;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            {{ member.name }}
+                        </div>
+                        <div style="font-size:11.5px;color:rgba(255,255,255,0.7);display:flex;gap:6px;flex-wrap:wrap;margin-top:2px;">
+                            <span>{{ member.get_relation_display }}</span>
+                            {% if member.age %}<span>· {{ member.age }} yrs</span>{% endif %}
+                            {% if member.blood_group and member.blood_group != 'unknown' %}
+                            <span style="background:rgba(255,255,255,0.15);border-radius:3px;padding:0 5px;">{{ member.blood_group }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Delete button -->
+                    <form method="post" action="{% url 'my_family_member_delete' family.pk member.pk %}"
+                          onsubmit="return confirm('Remove {{ member.name }}?');" style="flex-shrink:0;">
+                        {% csrf_token %}
+                        <button type="submit"
+                                style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:none;border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;"
+                                title="Remove">
+                            <i class="bi bi-trash3" style="font-size:12px;"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Body -->
+                <div style="padding:0.85rem 1rem;">
+
+                    <!-- Marital & Gender row -->
+                    <div class="d-flex gap-2 flex-wrap mb-2">
+                        <span class="member-detail-chip">{{ member.get_gender_display }}</span>
+                        <span class="member-detail-chip {% if member.marital_status == 'married' %}badge-married{% else %}badge-unmarried{% endif %}">
+                            {{ member.get_marital_status_display }}
+                        </span>
+                        {% if member.date_of_birth %}
+                        <span class="member-detail-chip">
+                            🎂 {{ member.date_of_birth|date:"d M Y" }}
+                            {% if member.birthday_this_month %}<span style="color:var(--saffron);">★ This Month!</span>{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Contact -->
+                    {% if member.mobile or member.email %}
+                    <div class="member-detail-row mb-1">
+                        {% if member.mobile %}
+                        <span><i class="bi bi-telephone-fill" style="color:var(--saffron);"></i> {{ member.mobile }}</span>
+                        {% endif %}
+                        {% if member.whatsapp and member.whatsapp != member.mobile %}
+                        <span><i class="bi bi-whatsapp" style="color:#25D366;"></i> {{ member.whatsapp }}</span>
+                        {% endif %}
+                        {% if member.email %}
+                        <span style="overflow:hidden;text-overflow:ellipsis;"><i class="bi bi-envelope-fill" style="color:var(--saffron);"></i> {{ member.email }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Education & Work -->
+                    {% if member.education or member.occupation %}
+                    <div class="member-detail-row mb-1">
+                        {% if member.education %}
+                        <span><i class="bi bi-mortarboard-fill" style="color:var(--dark-blue);"></i>
+                            {{ member.get_education_display }}
+                            {% if member.education_detail %}<span style="color:#888;">— {{ member.education_detail }}</span>{% endif %}
+                        </span>
+                        {% endif %}
+                        {% if member.occupation %}
+                        <span><i class="bi bi-briefcase-fill" style="color:var(--dark-blue);"></i>
+                            {{ member.occupation }}
+                            {% if member.occupation_detail %}<span style="color:#888;">— {{ member.occupation_detail }}</span>{% endif %}
+                        </span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Annual Income -->
+                    {% if member.annual_income %}
+                    <div class="member-detail-row mb-1">
+                        <span><i class="bi bi-currency-rupee" style="color:var(--saffron);"></i> {{ member.annual_income }}</span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Spouse / Marriage -->
+                    {% if member.spouse_name or member.marriage_date %}
+                    <div class="member-detail-row mb-1">
+                        {% if member.spouse_name %}
+                        <span><i class="bi bi-heart-fill" style="color:#e74c3c;"></i> {{ member.spouse_name }}</span>
+                        {% endif %}
+                        {% if member.marriage_date %}
+                        <span><i class="bi bi-calendar-heart-fill" style="color:#e74c3c;"></i> {{ member.marriage_date|date:"d M Y" }}</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Disability -->
+                    {% if member.any_disability %}
+                    <div class="member-detail-row">
+                        <span style="color:#888;"><i class="bi bi-info-circle-fill" style="color:var(--saffron);"></i>
+                            {{ member.disability_detail|default:"Disability noted" }}
+                        </span>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center py-5" style="border:2px dashed rgba(11,31,77,0.1);border-radius:10px;">
+        <div style="font-size:3.5rem;">👨‍👩‍👧</div>
+        <div style="color:var(--text-muted);margin-top:0.75rem;font-size:14.5px;">
+            No members added yet.<br>Click <strong>Add Member</strong> above to get started.
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="mt-4 pt-2 border-top d-flex justify-content-between align-items-center" style="border-color:rgba(11,31,77,0.08)!important;">
+        <a href="{% url 'my_family' %}" class="btn-samaj-outline">
+            <i class="bi bi-arrow-left me-1"></i>Back to My Family
+        </a>
+        <a href="{% url 'family_detail' family.pk %}" class="btn-samaj-primary">
+            <i class="bi bi-eye me-1"></i>View Public Profile
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleForm() {
+    const form = document.getElementById('addMemberForm');
+    form.classList.toggle('show');
+    const btn = document.getElementById('toggleFormBtn');
+    if (form.classList.contains('show')) {
+        btn.innerHTML = '<i class="bi bi-x-lg me-1"></i> Cancel';
+        btn.style.background = '#6c757d';
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+        btn.innerHTML = '<i class="bi bi-person-plus-fill me-1"></i> Add Member';
+        btn.style.background = 'var(--saffron)';
+    }
+}
+
+// Show marriage section when marital status is "married"
+const maritalSelect = document.getElementById('{{ form.marital_status.id_for_label }}');
+const marriageSection = document.getElementById('marriageSection');
+
+function toggleMarriage() {
+    if (maritalSelect && marriageSection) {
+        marriageSection.style.display = (maritalSelect.value === 'married') ? 'block' : 'none';
+    }
+}
+if (maritalSelect) {
+    maritalSelect.addEventListener('change', toggleMarriage);
+    toggleMarriage(); // Run on load (in case form has errors and value is set)
+}
+
+// Show disability detail when checkbox is checked
+const disabilityCheck = document.getElementById('{{ form.any_disability.id_for_label }}');
+const disabilityDetail = document.getElementById('disabilityDetail');
+
+function toggleDisability() {
+    if (disabilityCheck && disabilityDetail) {
+        disabilityDetail.style.display = disabilityCheck.checked ? 'block' : 'none';
+    }
+}
+if (disabilityCheck) {
+    disabilityCheck.addEventListener('change', toggleDisability);
+    toggleDisability();
+}
+
+// If form has errors, keep it open
+{% if form.errors %}
+document.getElementById('addMemberForm').classList.add('show');
+{% endif %}
+</script>
+{% endblock %}

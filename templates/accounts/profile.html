@@ -1,0 +1,67 @@
+{% extends "public/base.html" %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">My Profile</li>
+        </ol></nav>
+        <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.8rem; font-weight:700; color:var(--saffron); margin:0.5rem 0 0;">
+            👤 મારી પ્રોફાઇલ
+        </h1>
+        <div style="color:rgba(255,255,255,0.8);">My Profile</div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2.5rem 0; max-width: 600px;">
+    <div class="samaj-card p-4 text-center">
+        <div style="width:90px; height:90px; background:linear-gradient(135deg,var(--dark-blue),#2d5086); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:2.2rem; font-weight:700; margin:0 auto 1rem; border:3px solid var(--saffron);">
+            {{ user.username|first|upper }}
+        </div>
+        <h4 style="color:var(--dark-blue); font-weight:700; margin-bottom:0.25rem;">
+            {{ user.first_name }} {{ user.last_name }}
+        </h4>
+        <div style="color:#888; font-size:13.5px; margin-bottom:1rem;">@{{ user.username }}</div>
+
+        {% if user.is_staff %}
+        <span class="badge-saffron mb-3" style="display:inline-block;">Staff Member</span>
+        {% endif %}
+
+        <hr>
+        <div class="row text-start g-3">
+            <div class="col-12">
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Email</div>
+                <div style="font-weight:600; color:var(--dark-blue);">{{ user.email }}</div>
+            </div>
+            {% if user.profile %}
+            <div class="col-6">
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Mobile</div>
+                <div style="font-weight:600; color:var(--dark-blue);">{{ user.profile.mobile|default:"—" }}</div>
+            </div>
+            <div class="col-6">
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Role</div>
+                <div style="font-weight:600; color:var(--dark-blue);">{{ user.profile.get_role_display }}</div>
+            </div>
+            {% endif %}
+            <div class="col-6">
+                <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Joined</div>
+                <div style="font-weight:600; color:var(--dark-blue);">{{ user.date_joined|date:"d M Y" }}</div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="d-flex gap-2">
+            {% if user.is_staff %}
+            <a href="{% url 'dashboard_home' %}" class="btn-samaj-primary flex-fill">
+                <i class="bi bi-speedometer2 me-1"></i>Dashboard
+            </a>
+            {% endif %}
+            <a href="{% url 'logout' %}" class="btn-samaj-outline flex-fill">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "public/base.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'events' %}" style="color:var(--saffron);">Events</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">Detail</li>
+        </ol></nav>
+        <h1 style="font-size:1.6rem; font-weight:700; color:var(--saffron); margin:0.5rem 0 0;">{{ event.title }}</h1>
+    </div>
+</div>
+
+<div class="container" style="padding:2rem 0;">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="img-fluid rounded-3 mb-4" style="width:100%;max-height:400px;object-fit:cover;">
+            {% endif %}
+            <div class="samaj-card p-4">
+                <h2 style="color:var(--dark-blue); font-size:1.4rem; font-weight:700;">{{ event.title }}</h2>
+                <p style="color:#444; line-height:1.8; font-size:14.5px;">{{ event.description }}</p>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="samaj-card p-4">
+                <h5 style="color:var(--dark-blue); font-weight:700; margin-bottom:1rem;">Event Info</h5>
+                <div class="d-flex flex-column gap-3">
+                    <div>
+                        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">📅 Date</div>
+                        <div style="font-weight:600;color:var(--dark-blue);font-size:1.1rem;">{{ event.event_date|date:"d F Y" }}</div>
+                    </div>
+                    {% if event.event_time %}
+                    <div>
+                        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">⏰ Time</div>
+                        <div style="font-weight:600;color:var(--dark-blue);">{{ event.event_time|time:"g:i A" }}</div>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">📍 Location</div>
+                        <div style="font-weight:600;color:var(--dark-blue);">{{ event.location }}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Status</div>
+                        {% if event.is_upcoming %}
+                        <span class="badge-saffron">Upcoming</span>
+                        {% else %}
+                        <span class="badge-blue">Past Event</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+                <a href="{% url 'events' %}" class="btn-samaj-outline w-100 text-center">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

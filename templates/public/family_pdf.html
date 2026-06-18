@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ family.family_name }} - {{ family.family_id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', 'Noto Sans Gujarati', sans-serif; padding: 24px; font-size: 12px; color: #1a1a2e; background: white; }
+
+        .print-btn { background: #FF8C00; color: white; border: none; padding: 8px 24px; border-radius: 6px; font-size: 13px; cursor: pointer; margin-bottom: 18px; font-weight: 600; }
+        @media print { .print-btn { display: none; } body { padding: 0; } }
+
+        /* Header */
+        .header { background: #0B1F4D; color: white; padding: 18px 20px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+        .header-logo { width: 56px; height: 56px; background: #FF8C00; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 700; flex-shrink: 0; }
+        .header-samaj { font-family: 'Noto Sans Gujarati', sans-serif; color: #FF8C00; font-size: 0.85rem; }
+        .header-name { font-size: 1.3rem; font-weight: 700; color: white; }
+        .header-id { background: #FF8C00; color: white; border-radius: 4px; padding: 1px 8px; font-size: 11px; font-weight: 700; display: inline-block; margin-top: 4px; }
+
+        /* Family info grid */
+        .family-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; background: #f8f9fa; border-radius: 8px; padding: 14px; }
+        .info-item label { font-size: 10px; text-transform: uppercase; color: #888; letter-spacing: 0.4px; display: block; margin-bottom: 1px; }
+        .info-item span { font-weight: 600; color: #0B1F4D; font-size: 12.5px; }
+        .info-item.full { grid-column: span 3; }
+
+        /* Section title */
+        .section-title { font-family: 'Noto Sans Gujarati', sans-serif; font-size: 0.95rem; font-weight: 700; color: #0B1F4D; margin: 16px 0 10px; border-left: 4px solid #FF8C00; padding-left: 8px; }
+
+        /* Member cards */
+        .member-card { border: 1px solid #e8ecf0; border-radius: 8px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
+        .member-header { background: #0B1F4D; color: white; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+        .member-avatar { width: 38px; height: 38px; border-radius: 50%; background: #FF8C00; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1rem; flex-shrink: 0; color: white; }
+        .member-name { font-weight: 700; font-size: 13px; }
+        .member-sub { font-size: 10.5px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+        .badge { display: inline-block; border-radius: 3px; padding: 1px 7px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+        .badge-married { background: rgba(40,167,69,0.25); color: #28a745; }
+        .badge-unmarried { background: rgba(255,140,0,0.25); color: #FF8C00; }
+        .badge-blood { background: rgba(220,53,69,0.2); color: #dc3545; }
+
+        .member-body { padding: 10px 14px; }
+        .member-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; }
+        .member-field { margin-bottom: 5px; }
+        .member-field label { font-size: 9.5px; text-transform: uppercase; color: #aaa; letter-spacing: 0.4px; display: block; }
+        .member-field span { font-size: 11.5px; color: #333; font-weight: 500; }
+        .member-field.full { grid-column: span 2; }
+        .sub-label { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin: 6px 0 4px; padding-bottom: 2px; border-bottom: 1px solid #f0f0f0; grid-column: span 2; }
+        .birthday-flag { background: rgba(255,140,0,0.1); color: #FF8C00; border-radius: 3px; padding: 1px 6px; font-size: 10px; font-weight: 600; margin-left: 4px; }
+
+        /* Footer */
+        .pdf-footer { text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid #eee; font-size: 10.5px; color: #999; }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-logo">&#2332;</div>
+        <div>
+            <div class="header-samaj">ગુજરાતી સમાજ — વસ્તી પત્રક</div>
+            <div class="header-name">{{ family.family_name }}</div>
+            <div class="header-id">{{ family.family_id }}</div>
+        </div>
+    </div>
+
+    <!-- Family Info -->
+    <div class="family-grid">
+        <div class="info-item">
+            <label>Village / ગામ</label>
+            <span>{{ family.village }}</span>
+        </div>
+        <div class="info-item">
+            <label>Mobile / મોબાઈલ</label>
+            <span>{{ family.mobile }}</span>
+        </div>
+        <div class="info-item">
+            <label>Gotra / ગોત્ર</label>
+            <span>{{ family.get_gotra_display }}</span>
+        </div>
+        <div class="info-item">
+            <label>Business / વ્યવસાય</label>
+            <span>{{ family.get_business_display }}</span>
+        </div>
+        {% if family.email %}
+        <div class="info-item">
+            <label>Email</label>
+            <span>{{ family.email }}</span>
+        </div>
+        {% endif %}
+        <div class="info-item">
+            <label>Total Members</label>
+            <span>{{ members|length }}</span>
+        </div>
+        <div class="info-item full">
+            <label>Address / સરનામું</label>
+            <span>{{ family.address }}</span>
+        </div>
+    </div>
+
+    <!-- Members -->
+    <div class="section-title">👨‍👩‍👧 Family Members / પરિવારના સભ્ય</div>
+
+    {% for member in members %}
+    <div class="member-card">
+        <div class="member-header">
+            <div class="member-avatar">{{ member.name|first }}</div>
+            <div class="flex-grow-1">
+                <div class="member-name">
+                    {{ member.name }}
+                    {% if member.blood_group and member.blood_group != 'unknown' %}
+                    <span class="badge badge-blood">{{ member.blood_group }}</span>
+                    {% endif %}
+                    {% if member.marital_status == 'married' %}
+                    <span class="badge badge-married">Married</span>
+                    {% elif member.marital_status == 'unmarried' %}
+                    <span class="badge badge-unmarried">Unmarried</span>
+                    {% endif %}
+                </div>
+                <div class="member-sub">
+                    {{ member.get_relation_display }}
+                    &nbsp;·&nbsp; {{ member.get_gender_display }}
+                    {% if member.age %}&nbsp;·&nbsp; {{ member.age }} years{% endif %}
+                    {% if member.date_of_birth %}&nbsp;·&nbsp; Born {{ member.date_of_birth|date:"d M Y" }}
+                        {% if member.birthday_this_month %}<span style="color:#FF8C00;font-weight:700;">🎂 Birthday this month!</span>{% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.6);">#{{ forloop.counter }}</div>
+        </div>
+
+        <div class="member-body">
+            <div class="member-sections">
+
+                <!-- Contact -->
+                {% if member.mobile or member.whatsapp or member.email %}
+                <div class="sub-label">Contact</div>
+                {% if member.mobile %}
+                <div class="member-field">
+                    <label>Mobile</label>
+                    <span>{{ member.mobile }}</span>
+                </div>
+                {% endif %}
+                {% if member.whatsapp and member.whatsapp != member.mobile %}
+                <div class="member-field">
+                    <label>WhatsApp</label>
+                    <span>{{ member.whatsapp }}</span>
+                </div>
+                {% endif %}
+                {% if member.email %}
+                <div class="member-field full">
+                    <label>Email</label>
+                    <span>{{ member.email }}</span>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Education -->
+                {% if member.education or member.education_detail %}
+                <div class="sub-label">Education</div>
+                {% if member.education %}
+                <div class="member-field">
+                    <label>Education Level</label>
+                    <span>{{ member.get_education_display }}</span>
+                </div>
+                {% endif %}
+                {% if member.education_detail %}
+                <div class="member-field {% if not member.education %}full{% endif %}">
+                    <label>Detail</label>
+                    <span>{{ member.education_detail }}</span>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Occupation -->
+                {% if member.occupation or member.occupation_detail or member.annual_income %}
+                <div class="sub-label">Occupation</div>
+                {% if member.occupation %}
+                <div class="member-field">
+                    <label>Occupation</label>
+                    <span>{{ member.occupation }}</span>
+                </div>
+                {% endif %}
+                {% if member.annual_income %}
+                <div class="member-field">
+                    <label>Annual Income</label>
+                    <span>{{ member.annual_income }}</span>
+                </div>
+                {% endif %}
+                {% if member.occupation_detail %}
+                <div class="member-field full">
+                    <label>Work Detail</label>
+                    <span>{{ member.occupation_detail }}</span>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Marriage -->
+                {% if member.spouse_name or member.marriage_date %}
+                <div class="sub-label">Marriage</div>
+                {% if member.spouse_name %}
+                <div class="member-field">
+                    <label>Spouse Name</label>
+                    <span>{{ member.spouse_name }}</span>
+                </div>
+                {% endif %}
+                {% if member.marriage_date %}
+                <div class="member-field">
+                    <label>Marriage Date</label>
+                    <span>{{ member.marriage_date|date:"d F Y" }}</span>
+                </div>
+                {% endif %}
+                {% endif %}
+
+                <!-- Health -->
+                {% if member.any_disability %}
+                <div class="sub-label">Health</div>
+                <div class="member-field full">
+                    <label>Disability</label>
+                    <span>{{ member.disability_detail|default:"Yes" }}</span>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p style="color:#888;text-align:center;padding:20px;">No members added yet.</p>
+    {% endfor %}
+
+    <div class="pdf-footer">
+        Generated by Gujarati Samaj Community Portal &nbsp;·&nbsp; {{ family.family_id }} &nbsp;·&nbsp;
+        {% now "d M Y" %}
+    </div>
+</body>
+</html>

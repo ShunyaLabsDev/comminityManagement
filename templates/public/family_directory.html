@@ -1,0 +1,165 @@
+{% extends "public/base.html" %}
+{% block title %}વસ્તી પત્રક - Family Directory{% endblock %}
+
+{% block content %}
+
+<!-- PAGE HEADER -->
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb" style="margin:0; font-size:13px;">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+                <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">Vasti Patrak</li>
+            </ol>
+        </nav>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <div>
+                <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.8rem; font-weight:700; color:var(--saffron); margin:0;">
+                    વસ્તી પત્રક
+                </h1>
+                <div style="color:rgba(255,255,255,0.8); font-size:1rem;">Vasti Patrak (Family Directory)</div>
+            </div>
+            <div class="badge-saffron" style="font-size:14px; padding: 6px 14px;">
+                <i class="bi bi-people-fill me-1"></i>{{ total_count }} Families
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0;">
+
+    <!-- SEARCH & FILTERS -->
+    <div class="search-section">
+        <form method="get" action="">
+            <div class="row g-2">
+                <div class="col-12 col-md-4">
+                    <label style="font-size:12px; font-weight:600; color:var(--dark-blue); font-family:'Noto Sans Gujarati',sans-serif;">
+                        પરિવાર-નામ / Family Name
+                    </label>
+                    <input type="text" name="search" value="{{ search }}" class="form-control" placeholder="નામ / Name">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label style="font-size:12px; font-weight:600; color:var(--dark-blue);">ગામ / Village</label>
+                    <select name="village" class="form-select">
+                        <option value="">All</option>
+                        {% for v in villages %}
+                        <option value="{{ v }}" {% if village == v %}selected{% endif %}>{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label style="font-size:12px; font-weight:600; color:var(--dark-blue);">ગોત્ર / Gotra</label>
+                    <select name="gotra" class="form-select">
+                        <option value="">All</option>
+                        {% for val, label in gotra_choices %}
+                        <option value="{{ val }}" {% if gotra == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label style="font-size:12px; font-weight:600; color:var(--dark-blue);">વ્યવસાય / Business</label>
+                    <select name="business" class="form-select">
+                        <option value="">All</option>
+                        {% for val, label in business_choices %}
+                        <option value="{{ val }}" {% if business == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn-samaj-primary w-100">
+                        <i class="bi bi-search me-1"></i>શોધો
+                    </button>
+                    <a href="{% url 'family_directory' %}" class="btn-samaj-outline" style="white-space:nowrap;">Reset</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- SORT + COUNT -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <p style="margin:0; font-size:13.5px; color:var(--text-muted);">
+            <strong style="color:var(--dark-blue);">{{ total_count }}</strong> કુટુંબ મળ્યા / families found
+        </p>
+        <div class="d-flex align-items-center gap-2">
+            <span style="font-size:12.5px; color:var(--text-muted);">Sort:</span>
+            <a href="?{% if search %}search={{ search }}&{% endif %}sort=family_name" 
+               class="badge-{% if sort == 'family_name' %}saffron{% else %}blue{% endif %}" style="cursor:pointer; text-decoration:none;">Name A-Z</a>
+            <a href="?{% if search %}search={{ search }}&{% endif %}sort=village" 
+               class="badge-{% if sort == 'village' %}saffron{% else %}blue{% endif %}" style="cursor:pointer; text-decoration:none;">Village</a>
+        </div>
+    </div>
+
+    <!-- FAMILY CARDS GRID -->
+    <div class="row g-3">
+        {% for family in page_obj %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="family-card h-100">
+                <div class="family-avatar">
+                    {% if family.family_photo %}
+                        <img src="{{ family.family_photo.url }}" alt="{{ family.family_name }}"
+                             style="width:52px;height:52px;border-radius:50%;object-fit:cover;">
+                    {% else %}
+                        {{ family.family_name|first }}
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                    <div class="family-name-gu">{{ family.family_name }}</div>
+                    <div class="family-meta">
+                        <div><i class="bi bi-geo-alt-fill"></i> {{ family.village }}</div>
+                        <div><i class="bi bi-telephone-fill"></i> {{ family.mobile }}</div>
+                        <div>
+                            <i class="bi bi-people-fill"></i> {{ family.member_count }} members
+                            &nbsp;|&nbsp;
+                            <span class="badge-blue">{{ family.get_gotra_display|cut:" / "|truncatechars:10 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'family_detail' family.pk %}" class="btn-samaj-primary" style="font-size:12px; white-space:nowrap;">
+                        <i class="bi bi-eye me-1"></i>View
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-search" style="font-size:3rem; color:var(--text-muted);"></i>
+            <p class="mt-3" style="color:var(--text-muted);">કોઈ પરિવાર મળ્યો નહીં / No families found</p>
+            <a href="{% url 'family_directory' %}" class="btn-saffron">Clear Filters</a>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- PAGINATION -->
+    {% if page_obj.has_other_pages %}
+    <nav class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search %}&search={{ search }}{% endif %}{% if village %}&village={{ village }}{% endif %}{% if gotra %}&gotra={{ gotra }}{% endif %}">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if search %}&search={{ search }}{% endif %}{% if village %}&village={{ village }}{% endif %}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search %}&search={{ search }}{% endif %}{% if village %}&village={{ village }}{% endif %}">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+</div>
+{% endblock %}

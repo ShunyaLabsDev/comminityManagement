@@ -1,0 +1,74 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div class="content-card-title">
+                    <i class="bi bi-house-heart-fill me-2" style="color:var(--saffron);"></i>{{ title }}
+                </div>
+            </div>
+            <div style="padding: 1.5rem;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">કુટુંબ નામ / Family Name *</label>
+                            {{ form.family_name }}
+                            {% if form.family_name.errors %}<div class="text-danger" style="font-size:12px;">{{ form.family_name.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ગામ / Village *</label>
+                            {{ form.village }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ગોત્ર / Gotra *</label>
+                            {{ form.gotra }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">વ્યવસાય / Business *</label>
+                            {{ form.business }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">મોબાઈલ / Mobile *</label>
+                            {{ form.mobile }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">ઈ-મેઈલ / Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">સરનામું / Address *</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">કુટુંબ ફોટો / Family Photo</label>
+                            {{ form.family_photo }}
+                            {% if family and family.family_photo %}
+                            <div class="mt-2">
+                                <img src="{{ family.family_photo.url }}" alt="Current" style="height:60px; width:60px; object-fit:cover; border-radius:8px; border:2px solid var(--saffron);">
+                                <span style="font-size:12px; color:#888; margin-left:8px;">Current photo</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <hr style="margin: 1.5rem 0; border-color: rgba(11,31,77,0.1);">
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'dashboard_families' %}" style="background:#F0F2F5; color:#444; border:none; border-radius:7px; padding:0.5rem 1.2rem; font-size:13.5px; font-weight:600; text-decoration:none;">
+                            <i class="bi bi-x-lg me-1"></i>Cancel
+                        </a>
+                        <button type="submit" style="background:var(--saffron); color:white; border:none; border-radius:7px; padding:0.5rem 1.5rem; font-size:13.5px; font-weight:600; cursor:pointer;">
+                            <i class="bi bi-check-lg me-1"></i>Save Family
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

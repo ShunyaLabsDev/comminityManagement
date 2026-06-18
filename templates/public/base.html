@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="gu" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ગુજરાતી સમાજ{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <style>
+        :root {
+            --dark-blue: #0B1F4D;
+            --saffron: #FF8C00;
+            --saffron-light: #FFA733;
+            --white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --text-dark: #1a1a2e;
+            --text-muted: #6c757d;
+            --card-shadow: 0 2px 12px rgba(11,31,77,0.10);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', 'Noto Sans Gujarati', sans-serif;
+            background: #fff;
+            color: var(--text-dark);
+            font-size: 15px;
+        }
+
+        /* NAVBAR */
+        .navbar-samaj {
+            background: var(--dark-blue);
+            padding: 0.6rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand-samaj {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+            width: 44px;
+            height: 44px;
+            background: var(--saffron);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .brand-text-main {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .brand-text-sub {
+            color: var(--saffron);
+            font-size: 11px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link-samaj {
+            color: rgba(255,255,255,0.85) !important;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 0.4rem 0.75rem !important;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .nav-link-samaj:hover, .nav-link-samaj.active {
+            color: white !important;
+            background: rgba(255,140,0,0.15);
+        }
+
+        .btn-login {
+            background: var(--saffron);
+            color: white !important;
+            border-radius: 6px;
+            font-weight: 600;
+            padding: 0.35rem 1.1rem !important;
+        }
+
+        .btn-login:hover { background: var(--saffron-light); }
+
+        /* HERO */
+        .hero-section {
+            background: linear-gradient(135deg, var(--dark-blue) 0%, #1a3a7a 60%, #0d2d5e 100%);
+            color: white;
+            padding: 80px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF8C00' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .hero-gu-title {
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            color: var(--saffron);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .hero-en-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.1;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-tagline {
+            color: rgba(255,255,255,0.75);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 2rem;
+        }
+
+        .hero-btn-primary {
+            background: var(--saffron);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.7rem 1.8rem;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .hero-btn-primary:hover { background: var(--saffron-light); color: white; transform: translateY(-1px); }
+
+        .hero-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 6px;
+            padding: 0.7rem 1.8rem;
+            font-weight: 500;
+            font-size: 15px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            margin-left: 12px;
+        }
+
+        .hero-btn-secondary:hover { border-color: white; color: white; }
+
+        /* STATS */
+        .stats-section {
+            background: white;
+            padding: 0;
+            margin-top: -1px;
+        }
+
+        .stat-card {
+            background: white;
+            border-top: 4px solid var(--saffron);
+            border-radius: 0 0 10px 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,140,0,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            font-size: 1.4rem;
+            color: var(--saffron);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            line-height: 1;
+        }
+
+        .stat-label-gu {
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .stat-label-en {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        /* SECTIONS */
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            color: var(--saffron);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .section-title {
+            font-family: 'Noto Sans Gujarati', 'Poppins', sans-serif;
+            color: var(--dark-blue);
+            font-size: 1.7rem;
+            font-weight: 700;
+            margin: 0.3rem 0 0;
+        }
+
+        .section-title-en {
+            color: var(--dark-blue);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* CARDS */
+        .samaj-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(11,31,77,0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
+        }
+
+        .samaj-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 24px rgba(11,31,77,0.14);
+        }
+
+        /* FAMILY CARD */
+        .family-card {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid rgba(11,31,77,0.08);
+            box-shadow: var(--card-shadow);
+            padding: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s;
+        }
+
+        .family-card:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(11,31,77,0.13); }
+
+        .family-avatar {
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, var(--dark-blue), #2d5086);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .family-meta { font-size: 12.5px; color: var(--text-muted); }
+        .family-meta i { color: var(--saffron); margin-right: 4px; }
+        .family-name-gu { font-family: 'Noto Sans Gujarati', sans-serif; font-weight: 600; font-size: 15px; color: var(--dark-blue); }
+
+        /* EVENT CARD */
+        .event-card {
+            background: white;
+            border-radius: 10px;
+            border: 1px solid rgba(11,31,77,0.08);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            gap: 0;
+        }
+
+        .event-date-badge {
+            background: var(--dark-blue);
+            color: white;
+            min-width: 68px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0.5rem;
+            text-align: center;
+        }
+
+        .event-day { font-size: 2rem; font-weight: 700; line-height: 1; }
+        .event-month { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .event-info { padding: 1rem; flex: 1; }
+        .event-title { font-weight: 600; color: var(--dark-blue); font-size: 15px; margin-bottom: 4px; }
+        .event-location { font-size: 12.5px; color: var(--text-muted); }
+
+        /* ANNOUNCEMENT */
+        .announcement-item {
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid var(--saffron);
+            padding: 1rem 1.2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 12px;
+        }
+
+        .announcement-title { font-weight: 600; color: var(--dark-blue); font-size: 15px; }
+        .announcement-date { font-size: 12px; color: var(--text-muted); }
+        .announcement-desc { font-size: 13.5px; color: #444; margin-top: 4px; }
+
+        /* BUTTONS */
+        .btn-samaj-primary {
+            background: var(--dark-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.45rem 1.1rem;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-samaj-primary:hover { background: #0d2a66; color: white; }
+
+        .btn-samaj-outline {
+            background: transparent;
+            color: var(--dark-blue);
+            border: 2px solid var(--dark-blue);
+            border-radius: 6px;
+            padding: 0.4rem 1.1rem;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-samaj-outline:hover { background: var(--dark-blue); color: white; }
+
+        .btn-saffron {
+            background: var(--saffron);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.45rem 1.2rem;
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-saffron:hover { background: var(--saffron-light); color: white; }
+
+        /* FOOTER */
+        .footer-samaj {
+            background: var(--dark-blue);
+            color: rgba(255,255,255,0.85);
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-title {
+            color: var(--saffron);
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 13.5px;
+            display: block;
+            margin-bottom: 5px;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover { color: var(--saffron); }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.2rem;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 12.5px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        /* BADGES */
+        .badge-saffron {
+            background: rgba(255,140,0,0.12);
+            color: var(--saffron);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .badge-blue {
+            background: rgba(11,31,77,0.08);
+            color: var(--dark-blue);
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        /* PAGINATION */
+        .pagination .page-link {
+            color: var(--dark-blue);
+            border-color: rgba(11,31,77,0.15);
+            border-radius: 6px !important;
+            margin: 0 2px;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--dark-blue);
+            border-color: var(--dark-blue);
+            color: white;
+        }
+
+        /* SEARCH BAR */
+        .search-section {
+            background: var(--light-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--saffron);
+            box-shadow: 0 0 0 0.2rem rgba(255,140,0,0.15);
+        }
+
+        /* MOBILE */
+        @media (max-width: 768px) {
+            .hero-en-title { font-size: 1.8rem; }
+            .hero-gu-title { font-size: 1.4rem; }
+            .stat-number { font-size: 1.7rem; }
+            .family-card { flex-direction: column; text-align: center; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar-samaj">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="{% url 'home' %}" class="navbar-brand-samaj">
+                <div class="brand-logo">&#2332;</div>
+                <div>
+                    <div class="brand-text-main">ગુજરાતી સમાજ</div>
+                    <div class="brand-text-sub">GUJARATI SAMAJ PORTAL</div>
+                </div>
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="d-none d-lg-flex align-items-center gap-1">
+                <a href="{% url 'home' %}" class="nav-link-samaj {% if request.resolver_match.url_name == 'home' %}active{% endif %}">હોમ</a>
+                <a href="{% url 'family_directory' %}" class="nav-link-samaj">વસ્તી પત્રક</a>
+                <a href="{% url 'events' %}" class="nav-link-samaj">કાર્યક્રમ</a>
+                <a href="{% url 'announcements' %}" class="nav-link-samaj">જાહેરાત</a>
+                <a href="{% url 'gallery' %}" class="nav-link-samaj">ગેલેરી</a>
+                <a href="{% url 'contact' %}" class="nav-link-samaj">સંપર્ક</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_family' %}" class="nav-link-samaj">🏠 My Family</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'dashboard_home' %}" class="nav-link-samaj">Dashboard</a>
+                    {% endif %}
+                    <a href="{% url 'profile' %}" class="nav-link-samaj">
+                        <i class="bi bi-person-circle me-1"></i>{{ user.first_name|default:user.username }}
+                    </a>
+                    <a href="{% url 'logout' %}" class="nav-link-samaj btn-login ms-2"><i class="bi bi-box-arrow-right me-1"></i>Logout</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="nav-link-samaj">Register</a>
+                    <a href="{% url 'login' %}" class="nav-link-samaj btn-login ms-2"><i class="bi bi-lock-fill me-1"></i>Login</a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNav"
+                    style="border:none; background:none; color:white; font-size:1.4rem;">
+                <i class="bi bi-list"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div class="collapse d-lg-none" id="mobileNav">
+            <div class="py-2">
+                <a href="{% url 'home' %}" class="nav-link-samaj d-block py-2">🏠 હોમ / Home</a>
+                <a href="{% url 'family_directory' %}" class="nav-link-samaj d-block py-2">👨‍👩‍👧‍👦 વસ્તી પત્રક / Directory</a>
+                <a href="{% url 'events' %}" class="nav-link-samaj d-block py-2">📅 કાર્યક્રમ / Events</a>
+                <a href="{% url 'announcements' %}" class="nav-link-samaj d-block py-2">📢 જાહેરાત / Announcements</a>
+                <a href="{% url 'gallery' %}" class="nav-link-samaj d-block py-2">🖼 ગેલેરી / Gallery</a>
+                <a href="{% url 'contact' %}" class="nav-link-samaj d-block py-2">📞 સંપર્ક / Contact</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_family' %}" class="nav-link-samaj d-block py-2">🏠 My Family</a>
+                    {% if user.is_staff %}
+                    <a href="{% url 'dashboard_home' %}" class="nav-link-samaj d-block py-2">📊 Dashboard</a>
+                    {% endif %}
+                    <a href="{% url 'profile' %}" class="nav-link-samaj d-block py-2">👤 {{ user.first_name|default:user.username }} (Profile)</a>
+                    <a href="{% url 'logout' %}" class="btn-saffron d-inline-block mt-2">Logout</a>
+                {% else %}
+                    <a href="{% url 'register' %}" class="nav-link-samaj d-block py-2">📝 Register</a>
+                    <a href="{% url 'login' %}" class="btn-saffron d-inline-block mt-2">Login</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- MESSAGES -->
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- MAIN CONTENT -->
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<footer class="footer-samaj">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="footer-title">🕉 ગુજરાતી સમાજ</div>
+                <p style="font-size:13px; color:rgba(255,255,255,0.65);">
+                    એકતા, સેવા, સંસ્કાર અને સમર્પણ.<br>
+                    Unity, Service, Sanskar and Samarpan.
+                </p>
+            </div>
+            <div class="col-md-2">
+                <div class="footer-title">ઝડપી લિંક</div>
+                <a href="{% url 'family_directory' %}" class="footer-link">વસ્તી પત્રક</a>
+                <a href="{% url 'events' %}" class="footer-link">કાર્યક્રમ</a>
+                <a href="{% url 'gallery' %}" class="footer-link">ગેલેરી</a>
+                <a href="{% url 'announcements' %}" class="footer-link">જાહેરાત</a>
+                <a href="{% url 'contact' %}" class="footer-link">સંપર્ક</a>
+            </div>
+            <div class="col-md-3">
+                <div class="footer-title">સંપર્ક કરો</div>
+                <p style="font-size:13px; color:rgba(255,255,255,0.65);">
+                    <i class="bi bi-telephone-fill me-2" style="color:var(--saffron)"></i>+91 98765 43210<br>
+                    <i class="bi bi-envelope-fill me-2" style="color:var(--saffron)"></i>info@gujaratisamaj.org<br>
+                    <i class="bi bi-geo-alt-fill me-2" style="color:var(--saffron)"></i>સમાજ ભવન, ગુજરાત
+                </p>
+            </div>
+            <div class="col-md-3">
+                <div class="footer-title">આપણા અધિકાર</div>
+                <p style="font-size:13px; color:rgba(255,255,255,0.65);">ગુજરાત, ભારત</p>
+                <div class="d-flex gap-2 mt-2">
+                    <a href="#" style="color:var(--saffron); font-size:1.3rem;"><i class="bi bi-facebook"></i></a>
+                    <a href="#" style="color:var(--saffron); font-size:1.3rem;"><i class="bi bi-instagram"></i></a>
+                    <a href="#" style="color:var(--saffron); font-size:1.3rem;"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" style="color:var(--saffron); font-size:1.3rem;"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 ગુજરાતી સમાજ. All Rights Reserved. | Designed with ❤️ for our Samaj</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

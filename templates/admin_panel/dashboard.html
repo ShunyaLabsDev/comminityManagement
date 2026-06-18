@@ -1,0 +1,239 @@
+{% extends "admin_panel/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-3">
+        <div class="stat-card-admin blue">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-admin" style="background:rgba(11,31,77,0.08);">
+                    <i class="bi bi-house-heart-fill" style="color:var(--dark-blue);"></i>
+                </div>
+                <div>
+                    <div class="stat-number-admin">{{ total_families }}</div>
+                    <div class="stat-label-admin">Total Families</div>
+                    <div style="font-size:10.5px; color:var(--dark-blue); font-weight:600; margin-top:2px;">
+                        <a href="{% url 'dashboard_families' %}" style="text-decoration:none; color:inherit;">View Details →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card-admin orange">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-admin" style="background:rgba(255,140,0,0.1);">
+                    <i class="bi bi-people-fill" style="color:var(--saffron);"></i>
+                </div>
+                <div>
+                    <div class="stat-number-admin">{{ total_members }}</div>
+                    <div class="stat-label-admin">Total Members</div>
+                    <div style="font-size:10.5px; color:var(--saffron); font-weight:600; margin-top:2px;">
+                        <a href="/admin/families/member/" style="text-decoration:none; color:inherit;">View Details →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card-admin green">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-admin" style="background:rgba(40,167,69,0.1);">
+                    <i class="bi bi-calendar-event-fill" style="color:#28a745;"></i>
+                </div>
+                <div>
+                    <div class="stat-number-admin">{{ upcoming_events }}</div>
+                    <div class="stat-label-admin">Upcoming Events</div>
+                    <div style="font-size:10.5px; color:#28a745; font-weight:600; margin-top:2px;">
+                        <a href="{% url 'events' %}" style="text-decoration:none; color:inherit;" target="_blank">View Details →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-xl-3">
+        <div class="stat-card-admin purple">
+            <div class="d-flex align-items-center gap-3">
+                <div class="stat-icon-admin" style="background:rgba(111,66,193,0.1);">
+                    <i class="bi bi-megaphone-fill" style="color:#6f42c1;"></i>
+                </div>
+                <div>
+                    <div class="stat-number-admin">{{ total_announcements }}</div>
+                    <div class="stat-label-admin">Announcements</div>
+                    <div style="font-size:10.5px; color:#6f42c1; font-weight:600; margin-top:2px;">
+                        <a href="{% url 'announcements' %}" style="text-decoration:none; color:inherit;" target="_blank">View Details →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CHART + QUICK ACTIONS -->
+<div class="row g-3 mb-4">
+    <!-- Chart -->
+    <div class="col-lg-8">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div class="content-card-title">📈 Family Registrations (This Year)</div>
+            </div>
+            <div style="padding: 1.25rem;">
+                <canvas id="familyChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="content-card">
+            <div class="content-card-header">
+                <div class="content-card-title">⚡ Quick Actions</div>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="{% url 'family_add' %}" class="quick-action-btn qa-orange w-100">
+                            <i class="bi bi-house-add-fill"></i>
+                            Add Family
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'event_add' %}" class="quick-action-btn qa-green w-100">
+                            <i class="bi bi-calendar-plus-fill"></i>
+                            Add Event
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'announcement_add' %}" class="quick-action-btn qa-purple w-100">
+                            <i class="bi bi-megaphone-fill"></i>
+                            Announcement
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/admin/gallery/galleryimage/add/" class="quick-action-btn qa-blue w-100">
+                            <i class="bi bi-image-fill"></i>
+                            Add Photo
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        <a href="/admin/" class="quick-action-btn qa-blue w-100" style="flex-direction:row; justify-content:center;">
+                            <i class="bi bi-gear-fill"></i>
+                            Full Admin Panel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- RECENT FAMILIES -->
+<div class="content-card">
+    <div class="content-card-header">
+        <div class="content-card-title">🏠 Recent Family Registrations</div>
+        <a href="{% url 'dashboard_families' %}" style="font-size:13px; color:var(--saffron); text-decoration:none; font-weight:600;">View All →</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table admin-table mb-0">
+            <thead>
+                <tr>
+                    <th>Family ID</th>
+                    <th>Family Name</th>
+                    <th>Village</th>
+                    <th>Mobile</th>
+                    <th>Members</th>
+                    <th>Gotra</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for family in recent_families %}
+                <tr>
+                    <td><span style="background:rgba(11,31,77,0.08); color:var(--dark-blue); border-radius:4px; padding:2px 8px; font-size:11.5px; font-weight:700;">{{ family.family_id }}</span></td>
+                    <td>
+                        <div style="font-weight:600; color:var(--dark-blue);">{{ family.family_name }}</div>
+                        <div style="font-size:11.5px; color:#888;">{{ family.created_at|date:"d M Y" }}</div>
+                    </td>
+                    <td>{{ family.village }}</td>
+                    <td>{{ family.mobile }}</td>
+                    <td><span style="background:rgba(255,140,0,0.1); color:var(--saffron); border-radius:4px; padding:2px 8px; font-weight:700; font-size:12px;">{{ family.member_count }}</span></td>
+                    <td style="font-size:12.5px;">{{ family.get_gotra_display }}</td>
+                    <td>
+                        <div class="d-flex gap-1">
+                            <a href="{% url 'family_detail' family.pk %}" class="btn btn-sm" style="background:rgba(11,31,77,0.08); color:var(--dark-blue); border:none; font-size:12px;" target="_blank">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'family_edit' family.pk %}" class="btn btn-sm" style="background:rgba(255,140,0,0.1); color:var(--saffron); border:none; font-size:12px;">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-4" style="color:#888;">No families registered yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const ctx = document.getElementById('familyChart').getContext('2d');
+const months = {{ months_json|safe }};
+const familyCounts = {{ family_counts_json|safe }};
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: months,
+        datasets: [{
+            label: 'Family Registrations',
+            data: familyCounts,
+            borderColor: '#0B1F4D',
+            backgroundColor: 'rgba(11,31,77,0.06)',
+            borderWidth: 2.5,
+            pointBackgroundColor: '#FF8C00',
+            pointBorderColor: '#FF8C00',
+            pointRadius: 4,
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: '#0B1F4D',
+                titleColor: '#FF8C00',
+                bodyColor: 'white',
+                padding: 10
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: { stepSize: 1, color: '#888', font: { size: 11 } },
+                grid: { color: 'rgba(0,0,0,0.05)' }
+            },
+            x: {
+                ticks: { color: '#888', font: { size: 10 } },
+                grid: { display: false }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

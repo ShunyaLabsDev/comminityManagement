@@ -1,0 +1,148 @@
+{% extends "public/base.html" %}
+{% block title %}Register My Family{% endblock %}
+
+{% block content %}
+
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'my_family' %}" style="color:var(--saffron);">My Family</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">Register</li>
+        </ol></nav>
+        <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.8rem; font-weight:700; color:var(--saffron); margin:0.5rem 0 0;">
+            🏠 કુટુંબ નોંધણી
+        </h1>
+        <div style="color:rgba(255,255,255,0.8);">Register Your Family in Vasti Patrak</div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0; max-width: 700px;">
+
+    <!-- Steps indicator -->
+    <div class="d-flex align-items-center gap-2 mb-4">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--saffron);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">1</div>
+        <div style="font-weight:600;color:var(--dark-blue);font-size:14px;">Family Details</div>
+        <div style="flex:1;height:2px;background:rgba(11,31,77,0.1);"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:rgba(11,31,77,0.1);color:var(--text-muted);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">2</div>
+        <div style="font-weight:500;color:var(--text-muted);font-size:14px;">Add Members</div>
+    </div>
+
+    <div class="samaj-card p-4">
+        <div style="margin-bottom:1.5rem;">
+            <div style="font-family:'Noto Sans Gujarati',sans-serif;font-size:1.1rem;font-weight:700;color:var(--dark-blue);">
+                Step 1: Family Head Information
+            </div>
+            <div style="font-size:13px;color:var(--text-muted);">
+                Enter details of the family head / head of household.
+            </div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        કુટુંબ નામ / Family Head Name
+                    </label>
+                    {{ form.family_name }}
+                    {% if form.family_name.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.family_name.errors.0 }}</div>
+                    {% endif %}
+                    <div style="font-size:11.5px;color:#888;margin-top:3px;">
+                        Enter the full name of the family head (Gujarati or English both accepted)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        ગામ / Village
+                    </label>
+                    {{ form.village }}
+                    {% if form.village.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.village.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        ગોત્ર / Gotra
+                    </label>
+                    {{ form.gotra }}
+                    {% if form.gotra.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.gotra.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        મોબાઈલ / Mobile
+                    </label>
+                    {{ form.mobile }}
+                    {% if form.mobile.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.mobile.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        વ્યવસાય / Business Type
+                    </label>
+                    {{ form.business }}
+                    {% if form.business.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.business.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">
+                        <span style="color:var(--saffron);">*</span>
+                        સરનામું / Full Address
+                    </label>
+                    {{ form.address }}
+                    {% if form.address.errors %}
+                    <div style="color:#dc3545;font-size:12px;margin-top:3px;">{{ form.address.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">ઈ-મેઈલ / Email <span style="color:#888;font-weight:400;">(optional)</span></label>
+                    {{ form.email }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">કુટુંબ ફોટો / Family Photo <span style="color:#888;font-weight:400;">(optional)</span></label>
+                    {{ form.family_photo }}
+                    <div style="font-size:11.5px;color:#888;margin-top:3px;">JPG/PNG, max 5MB</div>
+                </div>
+            </div>
+
+            <!-- Privacy Note -->
+            <div style="background:rgba(255,140,0,0.06);border:1px solid rgba(255,140,0,0.2);border-radius:8px;padding:0.9rem 1rem;margin-top:1.5rem;">
+                <div style="font-size:13px;color:#555;">
+                    <i class="bi bi-shield-check-fill me-2" style="color:var(--saffron);"></i>
+                    <strong>Privacy:</strong> Your family information will be visible to all registered members of Gujarati Samaj.
+                    Only you and admins can edit or delete your family record.
+                </div>
+            </div>
+
+            <hr style="margin:1.5rem 0;border-color:rgba(11,31,77,0.08);">
+
+            <div class="d-flex gap-2 justify-content-between">
+                <a href="{% url 'my_family' %}" class="btn-samaj-outline">
+                    <i class="bi bi-arrow-left me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn-saffron" style="width:auto;padding:0.6rem 2rem;font-size:14px;">
+                    Save & Add Members <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

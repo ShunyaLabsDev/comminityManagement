@@ -1,0 +1,137 @@
+{% extends "public/base.html" %}
+{% block title %}મારો પરિવાર - My Family{% endblock %}
+
+{% block content %}
+
+<div style="background: linear-gradient(135deg, var(--dark-blue), #1a3a7a); color:white; padding: 2rem 0;">
+    <div class="container">
+        <nav aria-label="breadcrumb"><ol class="breadcrumb" style="margin:0;font-size:13px;">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}" style="color:var(--saffron);">Home</a></li>
+            <li class="breadcrumb-item active" style="color:rgba(255,255,255,0.7);">My Family</li>
+        </ol></nav>
+        <div class="d-flex justify-content-between align-items-end mt-2 flex-wrap gap-2">
+            <div>
+                <h1 style="font-family:'Noto Sans Gujarati',sans-serif; font-size:1.8rem; font-weight:700; color:var(--saffron); margin:0;">
+                    🏠 મારો પરિવાર
+                </h1>
+                <div style="color:rgba(255,255,255,0.8);">My Family — {{ request.user.first_name|default:request.user.username }}</div>
+            </div>
+            <a href="{% url 'my_family_register' %}" class="hero-btn-primary">
+                <i class="bi bi-plus-circle-fill me-2"></i>Register New Family
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container" style="padding: 2rem 0;">
+
+    {% if families %}
+        <div class="row g-4">
+            {% for family in families %}
+            <div class="col-12 col-lg-6">
+                <div class="samaj-card h-100">
+                    <!-- Card Header -->
+                    <div style="background: linear-gradient(135deg, var(--dark-blue), #1e3f85); padding: 1.25rem; border-radius: 10px 10px 0 0; display:flex; align-items:center; gap:14px;">
+                        {% if family.family_photo %}
+                        <img src="{{ family.family_photo.url }}" alt="{{ family.family_name }}"
+                             style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--saffron);">
+                        {% else %}
+                        <div style="width:56px;height:56px;border-radius:50%;background:var(--saffron);display:flex;align-items:center;justify-content:center;color:white;font-size:1.5rem;font-weight:700;flex-shrink:0;">
+                            {{ family.family_name|first }}
+                        </div>
+                        {% endif %}
+                        <div class="flex-grow-1">
+                            <div style="font-family:'Noto Sans Gujarati',sans-serif;font-size:1.05rem;font-weight:700;color:white;">{{ family.family_name }}</div>
+                            <div style="font-size:12px;color:rgba(255,255,255,0.7);">
+                                <i class="bi bi-geo-alt-fill me-1" style="color:var(--saffron);"></i>{{ family.village }}
+                                &nbsp;|&nbsp;
+                                <span style="background:var(--saffron);color:white;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:700;">{{ family.family_id }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-3">
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Mobile</div>
+                                <div style="font-weight:600;color:var(--dark-blue);font-size:14px;">{{ family.mobile }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Gotra</div>
+                                <div style="font-weight:600;color:var(--dark-blue);font-size:13px;">{{ family.get_gotra_display }}</div>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Business</div>
+                                <span class="badge-saffron">{{ family.get_business_display }}</span>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">Members</div>
+                                <div style="font-size:1.4rem;font-weight:700;color:var(--dark-blue);line-height:1.2;">
+                                    {{ family.member_count }}
+                                    <span style="font-size:12px;color:var(--text-muted);font-weight:400;">added</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Member Avatars -->
+                        {% with members=family.members.all %}
+                        {% if members %}
+                        <div class="d-flex gap-1 flex-wrap mb-3">
+                            {% for m in members|slice:":8" %}
+                            <div title="{{ m.name }}" style="width:32px;height:32px;border-radius:50%;background:rgba(11,31,77,0.08);border:1.5px solid rgba(11,31,77,0.1);display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--dark-blue);">
+                                {{ m.name|first }}
+                            </div>
+                            {% endfor %}
+                            {% if family.member_count > 8 %}
+                            <div style="width:32px;height:32px;border-radius:50%;background:var(--saffron);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;">
+                                +{{ family.member_count|add:"-8" }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% endwith %}
+
+                        <!-- Actions -->
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="{% url 'my_family_members' family.pk %}" class="btn-saffron flex-fill text-center" style="font-size:12.5px;">
+                                <i class="bi bi-people-fill me-1"></i>Manage Members
+                            </a>
+                            <a href="{% url 'my_family_edit' family.pk %}" class="btn-samaj-outline" style="font-size:12.5px;">
+                                <i class="bi bi-pencil-fill me-1"></i>Edit
+                            </a>
+                            <a href="{% url 'family_detail' family.pk %}" class="btn-samaj-primary" style="font-size:12.5px;">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
+                            <a href="{% url 'family_pdf' family.pk %}" target="_blank" class="btn-samaj-outline" style="font-size:12.5px;">
+                                <i class="bi bi-file-pdf me-1"></i>PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-5">
+            <div style="font-size:5rem; margin-bottom:1rem;">🏠</div>
+            <h3 style="color:var(--dark-blue); font-weight:700; margin-bottom:0.5rem;">
+                તમારો પરિવાર નોંધો
+            </h3>
+            <p style="color:var(--text-muted); font-size:15px; max-width:420px; margin:0 auto 2rem;">
+                You haven't registered your family yet. Join the Gujarati Samaj Vasti Patrak — it only takes 2 minutes!
+            </p>
+            <a href="{% url 'my_family_register' %}" class="hero-btn-primary" style="font-size:15px; padding:0.8rem 2rem;">
+                <i class="bi bi-plus-circle-fill me-2"></i>Register My Family Now
+            </a>
+            <div class="mt-4" style="font-size:13px; color:var(--text-muted);">
+                <i class="bi bi-shield-check-fill" style="color:var(--saffron);"></i>
+                Your information is only shared within the Gujarati Samaj community.
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
