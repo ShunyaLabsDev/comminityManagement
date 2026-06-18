@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'announcements',
     'gallery',
     'dashboard',
-    'gujrati_samaj'
+    'gujarati_samaj'
 ]
 
 MIDDLEWARE = [
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'gujrati_samaj.urls'
+ROOT_URLCONF = 'gujarati_samaj.urls'  # ← correct
 
 TEMPLATES = [
     {
