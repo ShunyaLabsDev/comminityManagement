@@ -37,19 +37,22 @@ from django.utils import timezone
 #     })
 
 def home(request):
-    import os
-    import logging
+    import os, logging
     logger = logging.getLogger(__name__)
-    
-    # Debug: log what paths exist
-    task_path = '/var/task'
-    templates_path = '/var/task/templates'
-    logger.error(f"BASE_DIR exists: {os.path.exists(task_path)}")
-    logger.error(f"templates exists: {os.path.exists(templates_path)}")
-    logger.error(f"task contents: {os.listdir(task_path) if os.path.exists(task_path) else 'NOT FOUND'}")
-    
-    # rest of your existing home view code below...
-
+    try:
+        contents = os.listdir('/var/task')
+        logger.error(f"TASK CONTENTS: {contents}")
+    except Exception as e:
+        logger.error(f"LISTDIR ERROR: {e}")
+    try:
+        has_templates = os.path.exists('/var/task/templates')
+        logger.error(f"TEMPLATES EXISTS: {has_templates}")
+        if has_templates:
+            logger.error(f"TEMPLATES CONTENTS: {os.listdir('/var/task/templates')}")
+    except Exception as e:
+        logger.error(f"TEMPLATES ERROR: {e}")
+        
+        
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
 
