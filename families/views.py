@@ -37,23 +37,27 @@ from django.utils import timezone
 #     })
 
 def home(request):
-    import os, logging
-    logger = logging.getLogger(__name__)
     from django.conf import settings
-    logger.error(f"BASE_DIR: {settings.BASE_DIR}")
+    import logging
+    logger = logging.getLogger(__name__)
     logger.error(f"TEMPLATE DIRS: {settings.TEMPLATES[0]['DIRS']}")
-    logger.error(f"TEMPLATES EXISTS at /var/task/templates: {os.path.exists('/var/task/templates')}")
 
-    total_families = Family.objects.filter(is_active=True).count()
-    total_members = Member.objects.filter(is_active=True).count()
-    upcoming_events = Event.objects.filter(
-        event_date__gte=timezone.now().date()
-    ).order_by('event_date')[:3]
-    announcements = Announcement.objects.filter(
-        is_published=True
-    ).order_by('-publish_date')[:4]
-    gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
-    contact = ContactInfo.objects.first()
+    try:
+        total_families = Family.objects.filter(is_active=True).count()
+        total_members = Member.objects.filter(is_active=True).count()
+        upcoming_events = Event.objects.filter(
+            event_date__gte=timezone.now().date()
+        ).order_by('event_date')[:3]
+        announcements = Announcement.objects.filter(
+            is_published=True
+        ).order_by('-publish_date')[:4]
+        gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
+        contact = ContactInfo.objects.first()
+    except Exception as e:
+        logger.error(f"DB ERROR: {e}")
+        total_families = total_members = 0
+        upcoming_events = announcements = gallery_preview = []
+        contact = None
 
     return render(request, 'public/home.html', {
         'total_families': total_families,
@@ -63,7 +67,8 @@ def home(request):
         'gallery_preview': gallery_preview,
         'contact': contact,
     })
-
+    
+    
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
 
