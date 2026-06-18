@@ -57,10 +57,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'gujarati_samaj.urls'  # ← correct
 
+TEMPLATE_DIR = os.path.join('/var/task', 'templates') if os.path.exists('/var/task/templates') else os.path.join(BASE_DIR, 'templates')
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

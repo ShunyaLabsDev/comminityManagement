@@ -2,12 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "gujarati_samaj/wsgi.py",
+      "src": "vercel_app.py",
       "use": "@vercel/python",
       "config": { "maxLambdaSize": "15mb" }
     }
   ],
   "routes": [
-    { "src": "/(.*)", "dest": "gujarati_samaj/wsgi.py" }
+    { "src": "/(.*)", "dest": "vercel_app.py" }
   ]
 }
