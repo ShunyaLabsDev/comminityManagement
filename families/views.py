@@ -37,9 +37,9 @@ from django.utils import timezone
 #     })
 
 def home(request):
-    from django.conf import settings
-    import logging
+    import os, logging
     logger = logging.getLogger(__name__)
+    from django.conf import settings
     logger.error(f"TEMPLATE DIRS: {settings.TEMPLATES[0]['DIRS']}")
 
     try:
@@ -53,21 +53,30 @@ def home(request):
         ).order_by('-publish_date')[:4]
         gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
         contact = ContactInfo.objects.first()
+        logger.error(f"DB OK: families={total_families}, members={total_members}")
     except Exception as e:
         logger.error(f"DB ERROR: {e}")
         total_families = total_members = 0
         upcoming_events = announcements = gallery_preview = []
         contact = None
 
-    return render(request, 'public/home.html', {
-        'total_families': total_families,
-        'total_members': total_members,
-        'upcoming_events': upcoming_events,
-        'announcements': announcements,
-        'gallery_preview': gallery_preview,
-        'contact': contact,
-    })
-    
+    try:
+        logger.error("ABOUT TO RENDER home.html")
+        response = render(request, 'public/home.html', {
+            'total_families': total_families,
+            'total_members': total_members,
+            'upcoming_events': upcoming_events,
+            'announcements': announcements,
+            'gallery_preview': gallery_preview,
+            'contact': contact,
+        })
+        logger.error("RENDER OK")
+        return response
+    except Exception as e:
+        logger.error(f"RENDER ERROR: {e}")
+        from django.http import HttpResponse
+        return HttpResponse(f"Render error: {str(e)}", status=500)
+
     
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
