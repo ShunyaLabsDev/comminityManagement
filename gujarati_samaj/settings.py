@@ -57,13 +57,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'gujarati_samaj.urls'  # ← correct
 
-TEMPLATES_DIR = '/var/task/templates' if os.path.exists('/var/task/templates') else os.path.join(BASE_DIR, 'templates')
-
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,12 +144,9 @@ USE_I18N = True
 USE_TZ = True
 
 # Static Files
-STATIC_DIR = '/var/task/static' if os.path.exists('/var/task/static') else os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = '/var/task/staticfiles' if os.path.exists('/var/task') else os.path.join(BASE_DIR, 'staticfiles')
-
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [STATIC_DIR]
-STATIC_ROOT = '/var/task/staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
