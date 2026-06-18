@@ -58,11 +58,15 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'gujarati_samaj.urls'  # ← correct
 
+# Works both locally and on Vercel
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
+if os.path.exists('/var/task/templates'):
+    TEMPLATES_DIR = '/var/task/templates'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [TEMPLATES_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
