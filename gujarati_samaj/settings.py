@@ -75,6 +75,27 @@ WSGI_APPLICATION = 'gujarati_samaj.wsgi.application'
 #   postgres://user:password@host:port/dbname
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
+# if DATABASE_URL:
+#     import urllib.parse as urlparse
+#     url = urlparse.urlparse(DATABASE_URL)
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': url.path[1:],
+#             'USER': url.username,
+#             'PASSWORD': url.password,
+#             'HOST': url.hostname,
+#             'PORT': url.port or 5432,
+#             'OPTIONS': {'client_encoding': 'UTF8'},
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
 if DATABASE_URL:
     import urllib.parse as urlparse
     url = urlparse.urlparse(DATABASE_URL)
@@ -86,16 +107,21 @@ if DATABASE_URL:
             'PASSWORD': url.password,
             'HOST': url.hostname,
             'PORT': url.port or 5432,
-            'OPTIONS': {'client_encoding': 'UTF8'},
+            'OPTIONS': {
+                'client_encoding': 'UTF8',
+                'sslmode': 'require',
+            },
         }
     }
 else:
+    # Local development — SQLite
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
