@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'announcements',
     'gallery',
     'dashboard',
-    'gujrati_samaj'
+    'gujarati_samaj'
 ]
 
 MIDDLEWARE = [
