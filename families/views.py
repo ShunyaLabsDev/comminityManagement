@@ -39,20 +39,31 @@ from django.utils import timezone
 def home(request):
     import os, logging
     logger = logging.getLogger(__name__)
-    try:
-        contents = os.listdir('/var/task')
-        logger.error(f"TASK CONTENTS: {contents}")
-    except Exception as e:
-        logger.error(f"LISTDIR ERROR: {e}")
-    try:
-        has_templates = os.path.exists('/var/task/templates')
-        logger.error(f"TEMPLATES EXISTS: {has_templates}")
-        if has_templates:
-            logger.error(f"TEMPLATES CONTENTS: {os.listdir('/var/task/templates')}")
-    except Exception as e:
-        logger.error(f"TEMPLATES ERROR: {e}")
-        
-        
+    from django.conf import settings
+    logger.error(f"BASE_DIR: {settings.BASE_DIR}")
+    logger.error(f"TEMPLATE DIRS: {settings.TEMPLATES[0]['DIRS']}")
+    logger.error(f"TEMPLATES EXISTS at /var/task/templates: {os.path.exists('/var/task/templates')}")
+
+    total_families = Family.objects.filter(is_active=True).count()
+    total_members = Member.objects.filter(is_active=True).count()
+    upcoming_events = Event.objects.filter(
+        event_date__gte=timezone.now().date()
+    ).order_by('event_date')[:3]
+    announcements = Announcement.objects.filter(
+        is_published=True
+    ).order_by('-publish_date')[:4]
+    gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
+    contact = ContactInfo.objects.first()
+
+    return render(request, 'public/home.html', {
+        'total_families': total_families,
+        'total_members': total_members,
+        'upcoming_events': upcoming_events,
+        'announcements': announcements,
+        'gallery_preview': gallery_preview,
+        'contact': contact,
+    })
+
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
 
