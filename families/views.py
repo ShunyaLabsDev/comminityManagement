@@ -15,27 +15,40 @@ from django.utils import timezone
 # PUBLIC PAGES
 # ──────────────────────────────────────────────
 
+# def home(request):
+#     total_families = Family.objects.filter(is_active=True).count()
+#     total_members = Member.objects.filter(is_active=True).count()
+#     upcoming_events = Event.objects.filter(
+#         event_date__gte=timezone.now().date()
+#     ).order_by('event_date')[:3]
+#     announcements = Announcement.objects.filter(
+#         is_published=True
+#     ).order_by('-publish_date')[:4]
+#     gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
+#     contact = ContactInfo.objects.first()
+
+#     return render(request, 'public/home.html', {
+#         'total_families': total_families,
+#         'total_members': total_members,
+#         'upcoming_events': upcoming_events,
+#         'announcements': announcements,
+#         'gallery_preview': gallery_preview,
+#         'contact': contact,
+#     })
+
 def home(request):
-    total_families = Family.objects.filter(is_active=True).count()
-    total_members = Member.objects.filter(is_active=True).count()
-    upcoming_events = Event.objects.filter(
-        event_date__gte=timezone.now().date()
-    ).order_by('event_date')[:3]
-    announcements = Announcement.objects.filter(
-        is_published=True
-    ).order_by('-publish_date')[:4]
-    gallery_preview = GalleryImage.objects.order_by('-created_at')[:6]
-    contact = ContactInfo.objects.first()
-
-    return render(request, 'public/home.html', {
-        'total_families': total_families,
-        'total_members': total_members,
-        'upcoming_events': upcoming_events,
-        'announcements': announcements,
-        'gallery_preview': gallery_preview,
-        'contact': contact,
-    })
-
+    import os
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    # Debug: log what paths exist
+    task_path = '/var/task'
+    templates_path = '/var/task/templates'
+    logger.error(f"BASE_DIR exists: {os.path.exists(task_path)}")
+    logger.error(f"templates exists: {os.path.exists(templates_path)}")
+    logger.error(f"task contents: {os.listdir(task_path) if os.path.exists(task_path) else 'NOT FOUND'}")
+    
+    # rest of your existing home view code below...
 
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
