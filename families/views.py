@@ -37,25 +37,20 @@ from django.utils import timezone
 #     })
 
 def home(request):
-    import logging
-    logger = logging.getLogger(__name__)
     from django.http import HttpResponse
-
     try:
-        total_families = Family.objects.filter(is_active=True).count()
-        total_members = Member.objects.filter(is_active=True).count()
-        upcoming_events = list(Event.objects.filter(
-            event_date__gte=timezone.now().date()
-        ).order_by('event_date')[:3])
-        announcements = list(Announcement.objects.filter(
-            is_published=True
-        ).order_by('-publish_date')[:4])
-        gallery_preview = list(GalleryImage.objects.order_by('-created_at')[:6])
-        contact = ContactInfo.objects.first()
-        return HttpResponse(f"DB WORKS: families={total_families}, members={total_members}, events={len(upcoming_events)}, announcements={len(announcements)}, gallery={len(gallery_preview)}, contact={contact}")
+        response = render(request, 'public/home.html', {
+            'total_families': 0,
+            'total_members': 0,
+            'upcoming_events': [],
+            'announcements': [],
+            'gallery_preview': [],
+            'contact': None,
+        })
+        return response
     except Exception as e:
         import traceback
-        return HttpResponse(f"DB CRASHED: {e}<br><pre>{traceback.format_exc()}</pre>", status=500)
+        return HttpResponse(f"TEMPLATE CRASHED: {e}<br><pre>{traceback.format_exc()}</pre>", status=500)
   
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
