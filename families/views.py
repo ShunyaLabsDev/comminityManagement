@@ -62,7 +62,7 @@ def home(request):
 
     try:
         logger.error("ABOUT TO RENDER home.html")
-        response = render(request, 'templates/public/home.html', {
+        response = render(request, 'public/home.html', {
             'total_families': total_families,
             'total_members': total_members,
             'upcoming_events': upcoming_events,
