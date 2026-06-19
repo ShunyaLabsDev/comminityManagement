@@ -38,20 +38,24 @@ from django.utils import timezone
 
 def home(request):
     from django.http import HttpResponse
-    try:
-        response = render(request, 'public/home.html', {
-            'total_families': 0,
-            'total_members': 0,
-            'upcoming_events': [],
-            'announcements': [],
-            'gallery_preview': [],
-            'contact': None,
-        })
-        return response
-    except Exception as e:
-        import traceback
-        return HttpResponse(f"TEMPLATE CRASHED: {e}<br><pre>{traceback.format_exc()}</pre>", status=500)
-  
+    from django.template.engine import Engine
+    from django.conf import settings
+    
+    engines_info = []
+    for engine in Engine.get_default().template_dirs:
+        engines_info.append(str(engine))
+    
+    import os
+    template_file = '/var/task/templates/public/home.html'
+    exists = os.path.exists(template_file)
+    
+    return HttpResponse(
+        f"SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}<br>"
+        f"TEMPLATES setting DIRS: {settings.TEMPLATES[0]['DIRS']}<br>"
+        f"Engine.get_default().template_dirs: {engines_info}<br>"
+        f"File exists at hardcoded path: {exists}<br>"
+    )
+ 
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
 
