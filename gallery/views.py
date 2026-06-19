@@ -6,7 +6,7 @@ def gallery(request):
     images = GalleryImage.objects.filter(is_active=True)
     if category:
         images = images.filter(category=category)
-    return render(request, 'public/gallery.html', {
+    return render(request, 'site/gallery.html', {
         'images': images, 'category': category,
         'categories': CATEGORY_CHOICES
     })

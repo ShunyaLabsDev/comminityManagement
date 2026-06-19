@@ -13,9 +13,9 @@ def event_list(request):
         events = Event.objects.filter(is_published=True, event_date__gte=today).order_by('event_date')
         tab = 'upcoming'
 
-    return render(request, 'public/events.html', {'events': events, 'tab': tab})
+    return render(request, 'site/events.html', {'events': events, 'tab': tab})
 
 
 def event_detail(request, pk):
     event = get_object_or_404(Event, pk=pk, is_published=True)
-    return render(request, 'public/event_detail.html', {'event': event})
+    return render(request, 'site/event_detail.html', {'event': event})
