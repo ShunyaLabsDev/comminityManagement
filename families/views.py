@@ -38,27 +38,17 @@ from django.utils import timezone
 
 def home(request):
     from django.http import HttpResponse
-    from django.template import engines
-    from django.conf import settings
     import os
 
     info = []
-    info.append(f"SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
-    info.append(f"TEMPLATES DIRS: {settings.TEMPLATES[0]['DIRS']}")
-    info.append(f"APP_DIRS: {settings.TEMPLATES[0]['APP_DIRS']}")
-
-    django_engine = engines['django']
-    info.append(f"Engine template_dirs: {django_engine.engine.dirs}")
-
-    template_file = '/var/task/templates/public/home.html'
-    info.append(f"File exists at hardcoded path: {os.path.exists(template_file)}")
-
-    # Try loading directly
-    try:
-        t = django_engine.get_template('public/home.html')
-        info.append(f"get_template SUCCESS: {t}")
-    except Exception as e:
-        info.append(f"get_template FAILED: {e}")
+    base = '/var/task/templates'
+    info.append(f"templates/ contents: {os.listdir(base)}")
+    
+    public_path = os.path.join(base, 'public')
+    if os.path.exists(public_path):
+        info.append(f"templates/public/ contents: {os.listdir(public_path)}")
+    else:
+        info.append("templates/public/ DOES NOT EXIST")
 
     return HttpResponse("<br>".join(info))
  
