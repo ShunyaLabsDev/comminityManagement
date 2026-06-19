@@ -38,23 +38,29 @@ from django.utils import timezone
 
 def home(request):
     from django.http import HttpResponse
-    from django.template.engine import Engine
+    from django.template import engines
     from django.conf import settings
-    
-    engines_info = []
-    for engine in Engine.get_default().template_dirs:
-        engines_info.append(str(engine))
-    
     import os
+
+    info = []
+    info.append(f"SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+    info.append(f"TEMPLATES DIRS: {settings.TEMPLATES[0]['DIRS']}")
+    info.append(f"APP_DIRS: {settings.TEMPLATES[0]['APP_DIRS']}")
+
+    django_engine = engines['django']
+    info.append(f"Engine template_dirs: {django_engine.engine.dirs}")
+
     template_file = '/var/task/templates/public/home.html'
-    exists = os.path.exists(template_file)
-    
-    return HttpResponse(
-        f"SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}<br>"
-        f"TEMPLATES setting DIRS: {settings.TEMPLATES[0]['DIRS']}<br>"
-        f"Engine.get_default().template_dirs: {engines_info}<br>"
-        f"File exists at hardcoded path: {exists}<br>"
-    )
+    info.append(f"File exists at hardcoded path: {os.path.exists(template_file)}")
+
+    # Try loading directly
+    try:
+        t = django_engine.get_template('public/home.html')
+        info.append(f"get_template SUCCESS: {t}")
+    except Exception as e:
+        info.append(f"get_template FAILED: {e}")
+
+    return HttpResponse("<br>".join(info))
  
 def family_directory(request):
     families = Family.objects.filter(is_active=True).prefetch_related('members')
